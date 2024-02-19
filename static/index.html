@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <form id="userForm" action="/submit" method="post">
         <input type="hidden" id="userId" name="ID" value="">
         <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="FirstName" required><br>
+        <input type="text" id="firstName" name="FirstName" required><br><br>
 
         <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="LastName" required><br>
+        <input type="text" id="lastName" name="LastName" required><br><br>
 
-        <button type="submit">Submit</button>
+        <button type="submit" id="submitbtn">Submit</button>
     </form>
 
     <div id="users">
@@ -22,5 +23,50 @@
     </div>
 
     <script src="/static/main.js"></script>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the default form submission
+    
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+    
+            // Submit the form data to the API using fetch
+            fetch('/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ FirstName: firstName, LastName: lastName }),
+            })
+            .then(response => response.json())
+            .then(user => {
+                // Update the users section with the newly added user
+                const usersContainer = document.getElementById('users');
+                const userDiv = document.createElement('div');
+                userDiv.innerHTML = `<p>${user.FirstName} ${user.LastName}</p>`;
+                usersContainer.appendChild(userDiv);
+    
+                // Clear the form fields
+                document.getElementById('firstName').value = '';
+                document.getElementById('lastName').value = '';
+            })
+            .catch(error => console.error('Error submitting form:', error));
+        });
+    
+        // Fetch user records from the API and update the HTML
+        fetch('/api/users')
+            .then(response => response.json())
+            .then(users => {
+                const usersContainer = document.getElementById('users');
+                users.forEach(user => {
+                    const userDiv = document.createElement('div');
+                    userDiv.innerHTML = `<p>${user.FirstName} ${user.LastName}</p>`;
+                    usersContainer.appendChild(userDiv);
+                });
+            })
+            .catch(error => console.error('Error fetching user records:', error));
+    </script>
+    
 </body>
 </html>

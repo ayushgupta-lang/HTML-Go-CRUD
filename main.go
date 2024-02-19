@@ -22,7 +22,7 @@ func main() {
 		var user models.User
 		c.Bind(&user)
 		database.DB.Create(&user)
-		c.JSON(200, gin.H{"message": "Form data submitted successfully"})
+		c.JSON(200, user)
 	})
 
 	r.PATCH("/edit/:id", func(c *gin.Context) {
@@ -51,6 +51,13 @@ func main() {
 	// Add route to serve HTML file
 	r.GET("/", func(c *gin.Context) {
 		c.File("static/index.html")
+	})
+
+	//fetch all user details
+	r.GET("/api/users", func(c *gin.Context) {
+		var users []models.User
+		database.DB.Find(&users)
+		c.JSON(200, users)
 	})
 
 	r.Run(":8080")

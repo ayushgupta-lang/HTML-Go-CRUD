@@ -1,0 +1,30 @@
+body {
+    display: flex;
+    flex-direction: column; /* Display children in a column */
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#userForm {
+    width: 300px; 
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center; 
+    margin-bottom: 20px; /* Add margin at the bottom to separate from the users' section */
+}
+
+#submitbtn {
+    margin-top: 10px; 
+}
+
+#users {
+    width: 300px; /* Match the width of the form */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center; 
+}
+
