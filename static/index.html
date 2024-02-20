@@ -18,20 +18,17 @@
         <button type="submit" id="submitbtn">Submit</button>
     </form>
 
-    <div id="users">
-    
-    </div>
+    <div id="users"></div>
 
     <script src="/static/main.js"></script>
 
     <script>
         document.getElementById('userForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Prevent the default form submission
-    
+            event.preventDefault();
+
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
-    
-            // Submit the form data to the API using fetch
+
             fetch('/submit', {
                 method: 'POST',
                 headers: {
@@ -41,32 +38,53 @@
             })
             .then(response => response.json())
             .then(user => {
-                // Update the users section with the newly added user
                 const usersContainer = document.getElementById('users');
                 const userDiv = document.createElement('div');
-                userDiv.innerHTML = `<p>${user.FirstName} ${user.LastName}</p>`;
+                userDiv.innerHTML = `
+                    <p>${user.FirstName} ${user.LastName}</p>
+                    <button onclick="deleteUser(${user.ID})">Delete</button>
+                `;
                 usersContainer.appendChild(userDiv);
-    
-                // Clear the form fields
+
                 document.getElementById('firstName').value = '';
                 document.getElementById('lastName').value = '';
             })
             .catch(error => console.error('Error submitting form:', error));
         });
-    
-        // Fetch user records from the API and update the HTML
-        fetch('/api/users')
-            .then(response => response.json())
-            .then(users => {
-                const usersContainer = document.getElementById('users');
-                users.forEach(user => {
-                    const userDiv = document.createElement('div');
-                    userDiv.innerHTML = `<p>${user.FirstName} ${user.LastName}</p>`;
-                    usersContainer.appendChild(userDiv);
-                });
+
+        function fetchAndDisplayUsers() {
+            fetch('/api/users')
+                .then(response => response.json())
+                .then(users => {
+                    const usersContainer = document.getElementById('users');
+                    usersContainer.innerHTML = '';
+
+                    users.forEach(user => {
+                        const userDiv = document.createElement('div');
+                        userDiv.innerHTML = `
+                            <p>${user.FirstName} ${user.LastName}</p>
+                            <button onclick="deleteUser(${user.ID})">Delete</button>
+                        `;
+                        usersContainer.appendChild(userDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching user records:', error));
+        }
+
+        function deleteUser(userId) {
+            fetch(`/delete/${userId}`, {
+                method: 'DELETE',
             })
-            .catch(error => console.error('Error fetching user records:', error));
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.message);
+                fetchAndDisplayUsers();
+            });
+        }
+
+        // Fetch and display users on page load
+        document.addEventListener('DOMContentLoaded', fetchAndDisplayUsers);
     </script>
-    
 </body>
 </html>
+
