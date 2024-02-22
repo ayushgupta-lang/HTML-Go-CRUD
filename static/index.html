@@ -26,30 +26,43 @@
         document.getElementById('userForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
+            const userId = document.getElementById('userId').value;
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
 
-            fetch('/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ FirstName: firstName, LastName: lastName }),
-            })
-            .then(response => response.json())
-            .then(user => {
-                const usersContainer = document.getElementById('users');
-                const userDiv = document.createElement('div');
-                userDiv.innerHTML = `
-                    <p>${user.FirstName} ${user.LastName}</p>
-                    <button onclick="deleteUser(${user.ID})">Delete</button>
-                `;
-                usersContainer.appendChild(userDiv);
-
-                document.getElementById('firstName').value = '';
-                document.getElementById('lastName').value = '';
-            })
-            .catch(error => console.error('Error submitting form:', error));
+            if (userId) {
+                // Edit existing user
+                fetch(`/edit/${userId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ FirstName: firstName, LastName: lastName }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    fetchAndDisplayUsers();
+                    clearFormFields();
+                })
+                .catch(error => console.error('Error editing user:', error));
+            } else {
+                // Submit new user
+                fetch('/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ FirstName: firstName, LastName: lastName }),
+                })
+                .then(response => response.json())
+                .then(user => {
+                    console.log(user);
+                    fetchAndDisplayUsers();
+                    clearFormFields();
+                })
+                .catch(error => console.error('Error submitting form:', error));
+            }
         });
 
         function fetchAndDisplayUsers() {
@@ -63,6 +76,7 @@
                         const userDiv = document.createElement('div');
                         userDiv.innerHTML = `
                             <p>${user.FirstName} ${user.LastName}</p>
+                            <button onclick="editUser(${user.ID}, '${user.FirstName}', '${user.LastName}')">Edit</button>
                             <button onclick="deleteUser(${user.ID})">Delete</button>
                         `;
                         usersContainer.appendChild(userDiv);
@@ -71,15 +85,30 @@
                 .catch(error => console.error('Error fetching user records:', error));
         }
 
+        function editUser(userId, firstName, lastName) {
+            document.getElementById('userId').value = userId;
+            document.getElementById('firstName').value = firstName;
+            document.getElementById('lastName').value = lastName;
+        }
+
         function deleteUser(userId) {
-            fetch(`/delete/${userId}`, {
-                method: 'DELETE',
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data.message);
-                fetchAndDisplayUsers();
-            });
+            const confirmation = confirm('Are you sure you want to delete this user?');
+            if (confirmation) {
+                fetch(`/delete/${userId}`, {
+                    method: 'DELETE',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    fetchAndDisplayUsers();
+                });
+            }
+        }
+
+        function clearFormFields() {
+            document.getElementById('userId').value = '';
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
         }
 
         // Fetch and display users on page load
