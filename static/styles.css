@@ -5,6 +5,12 @@ body {
     justify-content: center;
     height: 100vh;
     margin: 0;
+
+    background-image: url('https://media.istockphoto.com/id/1301749427/video/an-ocean-sunset.jpg?s=640x640&k=20&c=1BANYbuwNPDwCpWYDSx21XhUe10bCcYpF8uAJWkuAMA='); /* Replace with the URL of your background image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.9; 
 }
 
 #userForm {
@@ -13,7 +19,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     text-align: center; 
-    margin-bottom: 20px; /* Add margin at the bottom to separate from the users' section */
+    margin-bottom: 20px; 
 }
 
 #submitbtn {
@@ -21,10 +27,21 @@ body {
 }
 
 #users {
-    width: 300px; /* Match the width of the form */
+    width: 300px; 
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
     text-align: center; 
 }
 
+.user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd; /* Add a border between rows */
+    padding: 10px; /* Add some padding for spacing */
+}
+
+.user-row p {
+    margin: 0; /* Remove default margin for <p> element */
+}
