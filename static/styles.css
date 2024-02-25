@@ -6,7 +6,7 @@ body {
     height: 100vh;
     margin: 0;
 
-    background-image: url('https://media.istockphoto.com/id/1301749427/video/an-ocean-sunset.jpg?s=640x640&k=20&c=1BANYbuwNPDwCpWYDSx21XhUe10bCcYpF8uAJWkuAMA='); /* Replace with the URL of your background image */
+    background-image: url('https://media.istockphoto.com/id/1301749427/video/an-ocean-sunset.jpg?s=640x640&k=20&c=1BANYbuwNPDwCpWYDSx21XhUe10bCcYpF8uAJWkuAMA=');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
